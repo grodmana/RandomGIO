@@ -150,6 +150,19 @@ class HomePage(QWidget):
         # cluster area checkbox
         self.clust_area = QCheckBox('find cluster area')
         layout.addRow(self.clust_area)
+        # random trial input
+        integer_input = QIntValidator()
+        integer_input.setRange(1, 10000)
+        self.randm = QLineEdit()
+        self.randm.setValidator(integer_input)
+        self.randm.setPlaceholderText("# of random trials (only apply once)") 
+        #self.randm.setStyleSheet("max-width: 200px; ")
+        self.randm_btn = QPushButton("Apply")
+        self.randm_btn.setCursor(QCursor(Qt.PointingHandCursor))
+        self.randm_btn.setStyleSheet("max-width: 125px; ")
+        self.randm_btn.clicked.connect(partial(self.rand_trials, (self.randm.text() if self.randm.text() else '1')))
+        self.randm_btn.clicked.connect(self.disableButton)
+        layout.addRow(self.randm_btn, self.randm)
         # input
         ip_scalr_lb = QLabel("in")
         ip_scalr_lb.setStyleSheet("font-size: 17px; font-weight: 400;")
@@ -215,7 +228,15 @@ class HomePage(QWidget):
 
         # assign layout
         self.setLayout(layout)
-
+    def rand_trials(self, value: int):
+        value = int(self.randm.text())
+        if int(value) > 0:  
+            random_coords.N = random_coords.N + value 
+    
+    def disableButton(self):
+        self.randm_btn.setEnabled(False)
+        QTimer.singleShot(20000, lambda: self.randm_btn.setDisabled(False)) # disabled for twenty seconds
+      
     def _animate_prog(self, value):
         # print('prog', self.progress.value())
         if not self.start_btn.isEnabled():
