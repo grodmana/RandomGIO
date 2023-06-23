@@ -51,6 +51,20 @@ def run_nnd(real_coords: List[Tuple[float, float]], rand_coords: List[Tuple[floa
         clean_rand_df = pd.DataFrame()
         clean_rand_df[['og_coord', 'closest_coord', 'dist']] = pd.DataFrame(
             [x for x in rand_df['Nearest Neighbor Distance'].tolist()])
+        # random trials 
+        P = len(real_coords)
+        threshold = random_coords.N * 3
+        if random_coords.N > 1: # if input greater 
+            for i in range(random_coords.N):
+                if len(clean_rand_df[0:]) > P:
+                    bottom_rows = clean_rand_df.loc[P:, :]
+                    bottom_rows = bottom_rows.reset_index(drop=True)
+                    A = P * random_coords.N
+                    N_minus_one = random_coords.N - 1
+                    B = P * N_minus_one
+                    Q = A - B
+                    clean_rand_df = clean_rand_df.head(-Q)
+                    clean_rand_df = pd.merge(clean_rand_df, bottom_rows, how='outer', left_index=True, right_index=True)
         return clean_real_df, clean_rand_df
 
     return nnd(coordinate_list=real_coords, random_coordinate_list=rand_coords)
