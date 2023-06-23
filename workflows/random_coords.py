@@ -3,7 +3,7 @@ import numpy as np
 import random
 import cv2
 from globals import DEFAULT_DISTANCE_THRESH 
-
+N = 0
 def gen_random_coordinates(img_path: str, mask_path: str, count: int = 0):
     """
     RANDOM COORDS GENERATOR
@@ -23,7 +23,7 @@ def gen_random_coordinates(img_path: str, mask_path: str, count: int = 0):
 
         def generate_K_points(K):
             points = []
-            while len(points) < K:
+            while len(points) < K*N:
                 x = random.randint(1, boundary[0] - 1)
                 y = random.randint(1, boundary[1] - 1)
                 if mask[x, y] != 0:
