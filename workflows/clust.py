@@ -42,6 +42,21 @@ def run_clust(pb: pyqtSignal, real_coords: List[Tuple[float, float]], rand_coord
     rand_cluster = hc.fit_predict(rand_coordinates)
     rand_df = pd.DataFrame(rand_coordinates, columns=["X", "Y"])
     rand_df['cluster_id'] = rand_cluster
+    P = len(real_coords)
+    threshold = random_coords.N * 5 
+    if random_coords.N > 1: # if input greater 
+        for i in range(random_coords.N): 
+            if len(rand_df[0:]) > P: 
+                bottom_rows = rand_df.loc[P:, :]
+                bottom_rows = bottom_rows.reset_index(drop=True)
+                A = P * random_coords.N
+                N_minus_one = random_coords.N - 1
+                B = P * N_minus_one
+                Q = A - B 
+                rand_df = rand_df.head(-Q)
+                rand_df = pd.merge(rand_df, bottom_rows, how='outer', left_index=True, right_index=True)
+        if len(rand_df.columns) > threshold: 
+            rand_df = rand_df.drop(rand_df.iloc[:, threshold:], axis=1)
     pb.emit(50)
     clust_details_dfs = []
     if clust_area:
